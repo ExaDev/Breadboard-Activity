@@ -44,28 +44,44 @@ function hslToRgba(h: number, s: number, l: number, a: number): string {
   return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
-function generateTheme(baseHue: number, baseSaturation: number, baseLightness: number): Themes {
-  const lightMode: ThemeColors = {
-    light: hslToHex(baseHue, baseSaturation, baseLightness + 80),
-    lightgray: hslToHex(baseHue, baseSaturation, baseLightness + 50),
-    gray: hslToHex(baseHue, baseSaturation, baseLightness + 20),
-    darkgray: hslToHex(baseHue, baseSaturation, baseLightness - 30),
-    dark: hslToHex(baseHue, baseSaturation, baseLightness - 50),
-    secondary: hslToHex((baseHue + 30) % 360, baseSaturation, baseLightness),
-    tertiary: hslToHex((baseHue + 60) % 360, baseSaturation, baseLightness),
-    highlight: hslToRgba(baseHue, baseSaturation, baseLightness, 0.15),
-  }
+function generateColors(
+  baseHue: number,
+  baseSaturation: number,
+  baseLightness: number,
+  lightnessAdjustments: number[],
+  secondaryHueOffset: number,
+  tertiaryHueOffset: number,
+): ThemeColors {
+  const [light, lightgray, gray, darkgray, dark] = lightnessAdjustments.map((adj) =>
+    hslToHex(baseHue, baseSaturation, baseLightness + adj),
+  )
+  const secondary = hslToHex((baseHue + secondaryHueOffset) % 360, baseSaturation, baseLightness)
+  const tertiary = hslToHex((baseHue + tertiaryHueOffset) % 360, baseSaturation, baseLightness)
+  const highlight = hslToRgba(baseHue, baseSaturation, baseLightness, 0.15)
 
-  const darkMode: ThemeColors = {
-    light: hslToHex(baseHue, baseSaturation, baseLightness - 80),
-    lightgray: hslToHex(baseHue, baseSaturation, baseLightness - 50),
-    gray: hslToHex(baseHue, baseSaturation, baseLightness - 20),
-    darkgray: hslToHex(baseHue, baseSaturation, baseLightness + 30),
-    dark: hslToHex(baseHue, baseSaturation, baseLightness + 50),
-    secondary: hslToHex((baseHue + 210) % 360, baseSaturation, baseLightness),
-    tertiary: hslToHex((baseHue + 60) % 360, baseSaturation, baseLightness),
-    highlight: hslToRgba(baseHue, baseSaturation, baseLightness, 0.15),
-  }
+  return { light, lightgray, gray, darkgray, dark, secondary, tertiary, highlight }
+}
+
+function generateTheme(baseHue: number, baseSaturation: number, baseLightness: number): Themes {
+  const lightModeAdjustments = [80, 50, 20, -30, -50]
+  const darkModeAdjustments = [-80, -50, -20, 30, 50]
+
+  const lightMode = generateColors(
+    baseHue,
+    baseSaturation,
+    baseLightness,
+    lightModeAdjustments,
+    30,
+    60,
+  )
+  const darkMode = generateColors(
+    baseHue,
+    baseSaturation,
+    baseLightness,
+    darkModeAdjustments,
+    210,
+    60,
+  )
 
   return { lightMode, darkMode }
 }
