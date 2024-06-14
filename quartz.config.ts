@@ -1,5 +1,74 @@
-import { QuartzConfig } from "./quartz/cfg";
-import * as Plugin from "./quartz/plugins";
+import { QuartzConfig } from "./quartz/cfg"
+import * as Plugin from "./quartz/plugins"
+
+type ThemeColors = {
+  light: string
+  lightgray: string
+  gray: string
+  darkgray: string
+  dark: string
+  secondary: string
+  tertiary: string
+  highlight: string
+}
+
+type Themes = {
+  lightMode: ThemeColors
+  darkMode: ThemeColors
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  l /= 100
+  const a = (s * Math.min(l, 1 - l)) / 100
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0")
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
+}
+
+function hslToRgba(h: number, s: number, l: number, a: number): string {
+  l /= 100
+  const a_s = (s * Math.min(l, 1 - l)) / 100
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12
+    const color = l - a_s * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * color)
+  }
+  const r = f(0)
+  const g = f(8)
+  const b = f(4)
+  return `rgba(${r}, ${g}, ${b}, ${a})`
+}
+
+function generateTheme(baseHue: number, baseSaturation: number, baseLightness: number): Themes {
+  const lightMode: ThemeColors = {
+    light: hslToHex(baseHue, baseSaturation, baseLightness + 80),
+    lightgray: hslToHex(baseHue, baseSaturation, baseLightness + 50),
+    gray: hslToHex(baseHue, baseSaturation, baseLightness + 20),
+    darkgray: hslToHex(baseHue, baseSaturation, baseLightness - 30),
+    dark: hslToHex(baseHue, baseSaturation, baseLightness - 50),
+    secondary: hslToHex((baseHue + 30) % 360, baseSaturation, baseLightness),
+    tertiary: hslToHex((baseHue + 60) % 360, baseSaturation, baseLightness),
+    highlight: hslToRgba(baseHue, baseSaturation, baseLightness, 0.15),
+  }
+
+  const darkMode: ThemeColors = {
+    light: hslToHex(baseHue, baseSaturation, baseLightness - 80),
+    lightgray: hslToHex(baseHue, baseSaturation, baseLightness - 50),
+    gray: hslToHex(baseHue, baseSaturation, baseLightness - 20),
+    darkgray: hslToHex(baseHue, baseSaturation, baseLightness + 30),
+    dark: hslToHex(baseHue, baseSaturation, baseLightness + 50),
+    secondary: hslToHex((baseHue + 210) % 360, baseSaturation, baseLightness),
+    tertiary: hslToHex((baseHue + 60) % 360, baseSaturation, baseLightness),
+    highlight: hslToRgba(baseHue, baseSaturation, baseLightness, 0.15),
+  }
+
+  return { lightMode, darkMode }
+}
 
 /**
  * Quartz 4.0 Configuration
@@ -26,28 +95,12 @@ const config: QuartzConfig = {
         body: "Source Sans Pro",
         code: "IBM Plex Mono",
       },
-      colors: {
-        lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#284b63",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-        },
-        darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#7b97aa",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-        },
-      },
+      colors: generateTheme(
+        // 210, // blue
+        20, // blue
+        50, // 50%
+        50, // 50%
+      ),
     },
   },
   plugins: {
