@@ -1,6 +1,5 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
-
 type ThemeColors = {
   light: string
   lightgray: string
@@ -44,16 +43,27 @@ function hslToRgba(h: number, s: number, l: number, a: number): string {
   return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+function computeModeAdjustments(baseLightness: number, isLightMode: boolean): number[] {
+  const adjustmentFactor = isLightMode ? 1 : -1
+  return [
+    baseLightness + 80 * adjustmentFactor,
+    baseLightness + 50 * adjustmentFactor,
+    baseLightness + 20 * adjustmentFactor,
+    baseLightness - 30 * adjustmentFactor,
+    baseLightness - 50 * adjustmentFactor,
+  ]
+}
+
 function generateColors(
   baseHue: number,
   baseSaturation: number,
   baseLightness: number,
-  lightnessAdjustments: number[],
+  adjustments: number[],
   secondaryHueOffset: number,
   tertiaryHueOffset: number,
 ): ThemeColors {
-  const [light, lightgray, gray, darkgray, dark] = lightnessAdjustments.map((adj) =>
-    hslToHex(baseHue, baseSaturation, baseLightness + adj),
+  const [light, lightgray, gray, darkgray, dark] = adjustments.map((adj) =>
+    hslToHex(baseHue, baseSaturation, adj),
   )
   const secondary = hslToHex((baseHue + secondaryHueOffset) % 360, baseSaturation, baseLightness)
   const tertiary = hslToHex((baseHue + tertiaryHueOffset) % 360, baseSaturation, baseLightness)
@@ -63,8 +73,8 @@ function generateColors(
 }
 
 function generateTheme(baseHue: number, baseSaturation: number, baseLightness: number): Themes {
-  const lightModeAdjustments = [80, 50, 20, -30, -50]
-  const darkModeAdjustments = [-80, -50, -20, 30, 50]
+  const lightModeAdjustments = computeModeAdjustments(baseLightness, true)
+  const darkModeAdjustments = computeModeAdjustments(baseLightness, false)
 
   const lightMode = generateColors(
     baseHue,
