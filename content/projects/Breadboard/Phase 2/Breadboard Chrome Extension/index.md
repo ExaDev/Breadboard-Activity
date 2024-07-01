@@ -34,12 +34,3 @@ The most up-to-date and stable version of this project, that uses the Claude API
 - [breadboard-sentiment-analysis-chrome-extension](https://github.com/ExaDev/breadboard/tree/breadboard-sentiment-analysis-chrome-extension/packages/breadboard-chrome-extension)
 
 This follows the same structure as the summariser, but the focus here was to integrate a board that performs sentiment analysis on a selected piece of text.
-
-## Reusable Boards
-
-- [Claude summary](https://github.com/ExaDev/breadboard/blob/claude-summarisation-board-test/packages/breadboard-chrome-extension/src/breadboard/graphs/claudeBoard.json)
-  [🔗](https://breadboard-ai.web.app/?board=https%3A%2F%2Fraw.githubusercontent.com%2FExaDev%2Fbreadboard%2Fclaude-summarisation-board-test%2Fpackages%2Fbreadboard-chrome-extension%2Fsrc%2Fbreadboard%2Fgraphs%2FclaudeBoard.json)
-- [Sentiment analysis](https://github.com/ExaDev/breadboard/blob/breadboard-sentiment-analysis-chrome-extension/packages/breadboard-chrome-extension/src/breadboard/graphs/sentimentBoard.json)
-  [🔗](https://breadboard-ai.web.app/?mode=build&board=https%3A%2F%2Fraw.githubusercontent.com%2FExaDev%2Fbreadboard%2Fbreadboard-sentiment-analysis-chrome-extension%2Fpackages%2Fbreadboard-chrome-extension%2Fsrc%2Fbreadboard%2Fgraphs%2FsentimentBoard.json)
-
-> [!note] For [Sentiment Analysis](projects/Breadboard/Phase%202/Breadboard%20Chrome%20Extension/Sentiment%20Analysis.md) and [[Text Labelling]], a Hugging Face API key can be generated for free [here](https://huggingface.co/settings/tokens).
